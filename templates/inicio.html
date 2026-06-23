@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="/static/css/inicio.css">
 </head>
 <body>
-  <!-- ══════ NAVBAR ══════ -->
+
   <nav class="navbar">
     <div class="brand-group">
       <img src="/static/img/logoEmpresa.png" alt="AM Dev Solutions" class="logo-empresa">
@@ -25,7 +25,6 @@
     </ul>
   </nav>
 
-  <!-- ══════ PANTALLA 1: INICIO ══════ -->
   <div id="pantalla-inicio" class="pantalla activa">
 
     <header class="hero">
@@ -51,8 +50,8 @@
       </div>
 
       <input type="file" id="inputImagen" accept="image/jpeg,image/png,image/webp" hidden>
-      <button class="btn-seleccionar" id="btn-analizar">
-        Seleccionar imagen
+      <button type="button" class="btn-seleccionar" id="btn-analizar">
+       Analizar imagen
       </button>
     </section>
 
@@ -76,9 +75,9 @@
 
   </div>
 
-  <!-- ══════ PANTALLA 2: ANÁLISIS ══════ -->
   <div id="pantalla-analisis" class="pantalla">
     <div class="analisis-layout">
+      
       <div>
         <div class="analisis-header">
           <h2>Analizando imagen...</h2>
@@ -99,6 +98,7 @@
 
       <div class="pasos-lado">
         <p class="pasos-titulo">Proceso de análisis</p>
+        
         <div class="paso" id="paso-1">
           <div class="paso-num">1</div>
           <div class="paso-info">
@@ -107,6 +107,7 @@
             <div class="barra-wrap"><div class="barra-fill" id="barra-1"></div></div>
           </div>
         </div>
+        
         <div class="paso" id="paso-2">
           <div class="paso-num">2</div>
           <div class="paso-info">
@@ -115,6 +116,7 @@
             <div class="barra-wrap"><div class="barra-fill" id="barra-2"></div></div>
           </div>
         </div>
+        
         <div class="paso" id="paso-3">
           <div class="paso-num">3</div>
           <div class="paso-info">
@@ -123,6 +125,7 @@
             <div class="barra-wrap"><div class="barra-fill" id="barra-3"></div></div>
           </div>
         </div>
+        
         <div class="paso" id="paso-4">
           <div class="paso-num">4</div>
           <div class="paso-info">
@@ -131,62 +134,74 @@
             <div class="barra-wrap"><div class="barra-fill" id="barra-4"></div></div>
           </div>
         </div>
+
       </div>
     </div>
   </div>
 
-  <!-- ══════ PANTALLA 3: RESULTADOS ══════ -->
   <div id="pantalla-resultado" class="pantalla">
-    <div class="resultado-layout">
+    <div class="resultado-card">
+      <div class="resultado-layout">
 
-      <div class="resultado-col-izq">
-        <div class="imagen-resultado">
-          <img id="preview-resultado" src="" alt="" style="display:none;">
+        <div class="resultado-col-izq">
+          <div class="imagen-resultado">
+            <img id="preview-resultado" src="" alt="" style="display:none;">
+          </div>
+          <button class="btn-nueva btn-nueva-izq" onclick="SIFIS.reiniciar()">Analizar otra imagen</button>
         </div>
-        <button class="btn-nueva btn-nueva-izq" onclick="SIFIS.reiniciar()">Analizar otra imagen</button>
-      </div>
 
-      <div>
-        <div class="resultado-banner" id="resultado-banner">
-          <div class="banner-izq">
-            <div class="banner-num" id="banner-num">R</div>
-            <div>
-              <div class="banner-titulo" id="banner-titulo">Imagen real</div>
-              <div class="banner-sub" id="banner-sub">Fotografía auténtica</div>
+        <div>
+          <div class="resultado-banner" id="resultado-banner">
+            <div class="banner-izq">
+              <div class="banner-num" id="banner-num">R</div>
+              <div>
+                <div class="banner-titulo" id="banner-titulo">Imagen real</div>
+                <div class="banner-sub" id="banner-sub">Fotografía auténtica</div>
+              </div>
             </div>
-            
             <span class="banner-pct" id="banner-pct">—</span>
           </div>
-        </div>
 
-        <div class="metricas-grid">
-          <div class="metrica">
-            <div class="metrica-label">Confianza del modelo</div>
-            <div class="metrica-valor" id="met-confianza">—</div>
+          <div class="tabla-metricas" id="tabla-metricas">
+            <div class="fila-metrica">
+              <span class="fila-label">Probabilidad de IA</span>
+              <span class="fila-valor" id="val-probabilidad">—</span>
+            </div>
+            <div class="fila-metrica">
+              <span class="fila-label">Confianza</span>
+              <span class="fila-valor" id="val-confianza">—</span>
+            </div>
+            <div class="fila-metrica">
+              <span class="fila-label">Clasificación</span>
+              <span class="fila-valor" id="val-clasificacion">—</span>
+            </div>
           </div>
-          <div class="metrica">
-            <div class="metrica-label">Score ELA</div>
-            <div class="metrica-valor" id="met-ela">—</div>
-          </div>
-          <div class="metrica">
-            <div class="metrica-label">Anomalías detectadas</div>
-            <div class="metrica-valor" id="met-anomalias">—</div>
-          </div>
-          <div class="metrica">
-            <div class="metrica-label">Tiempo de análisis</div>
-            <div class="metrica-valor" id="met-tiempo">—</div>
-          </div>
-        </div>
 
-        <div class="descripcion-box" id="descripcion-box"></div>
+          <div class="ela-panel" id="ela-panel">
+            <div class="ela-header" id="ela-toggle">
+              <div class="ela-header-izq">
+                <span class="ela-titulo">Visualización ELA</span>
+                <span class="ela-info-btn" title="El análisis ELA resalta zonas con inconsistencias de compresión. Las áreas más brillantes indican posibles manipulaciones o generación artificial.">ⓘ</span>
+              </div>
+              <span class="ela-chevron" id="ela-chevron">▼</span>
+            </div>
+            <div class="ela-body" id="ela-body">
+              <p class="ela-descripcion">Las zonas más brillantes indican mayor inconsistencia en la compresión. En imágenes generadas por IA suelen aparecer patrones uniformes o anomalías distribuidas.</p>
+              <div class="ela-img-label">Mapa de error ELA</div>
+              <div class="ela-img-wrap">
+                <img id="ela-imagen" src="" alt="Visualización ELA">
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
-
     </div>
   </div>
 
-  <!-- ══════ FOOTER ══════ -->
   <footer class="footer-sifis">
     <div class="footer-inner">
+      
       <div class="footer-col"> 
         <div class="footer-brand">
           <img src="/static/img/logoEmpresa.png" alt="AM Dev Solutions" class="logo-empresa">
@@ -198,25 +213,27 @@
           digital generado por Inteligencia Artificial.
         </p>
       </div>
+      
       <div class="footer-col">
         <h4>Navegación</h4>
         <a href="/">Inicio</a>
         <a href="/como-funciona">Cómo funciona</a>
         <a href="/acerca">Acerca de</a>
       </div>
+      
       <div class="footer-col">
         <h4>Institución</h4>
         <p>Universidad Tecnológica de la Huasteca Hidalguense</p>
         <p>Huejutla de Reyes, Hidalgo · México</p>
         <p>Estadía profesional · 2026</p>
       </div>
+
     </div>
     <div class="footer-bottom">
-      © 2026 SIFIS · Proyecto académico desarrollado con <span>Python, Flask &amp; OpenCV</span>
+      &copy; 2026 SIFIS &middot; Proyecto académico desarrollado con <span>Python, Flask &amp; OpenCV</span>
     </div>
   </footer>
 
-  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   
   <script src="/static/js/app.js" type="module"></script>

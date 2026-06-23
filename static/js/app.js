@@ -151,8 +151,17 @@ async function enviarImagen(file) {
   }
 }
 
+// ── Calcular nivel de confianza categórico a partir de un % ─────────────────
+// Ajusta estos umbrales si tu criterio académico es distinto.
+function nivelDeConfianza(porcentaje) {
+  if (porcentaje >= 85) return "Alto";
+  if (porcentaje >= 60) return "Medio";
+  return "Bajo";
+}
+
 // ── Mostrar resultados ───────────────────────────────────────────────────────
 function mostrarResultados(data) {
+  mostrarPantalla("pantalla-resultado");
   const esIA = data.prediccion === "IA";
 
   // Banner
@@ -164,29 +173,40 @@ function mostrarResultados(data) {
   document.getElementById("banner-sub").textContent = esIA
     ? "Generada artificialmente"
     : "Fotografía auténtica";
+
   document.getElementById("banner-pct").textContent = data.confianza + "%";
 
-  // Métricas
-  document.getElementById("met-confianza").textContent = data.confianza + "%";
-  document.getElementById("met-ela").textContent = data.ela_score;
-  document.getElementById("met-anomalias").textContent = data.anomalias;
-  document.getElementById("met-tiempo").textContent = data.tiempo + "s";
+  // ── Tabla de métricas: Probabilidad de IA / Confianza / Clasificación ──────
+  // data.prediccion_cruda es la salida directa del sigmoide del modelo (0-1):
+  // es la probabilidad real de que la imagen sea IA, tal cual la entrega Keras.
+  const probabilidadIA = data.prediccion_cruda * 100;
 
-  // Descripción
-  const desc = document.getElementById("descripcion-box");
-  desc.textContent = esIA
-    ? `El modelo detectó patrones característicos de imágenes sintéticas con un ${data.confianza}% de confianza. El análisis ELA reveló ${data.anomalias} zonas con inconsistencias de compresión.`
-    : `No se detectaron patrones artificiales. El modelo clasificó la imagen como auténtica con un ${data.confianza}% de confianza.`;
+  document.getElementById("val-probabilidad").textContent = probabilidadIA.toFixed(1) + "%";
+  document.getElementById("val-confianza").textContent = nivelDeConfianza(data.confianza);
+  document.getElementById("val-clasificacion").textContent = esIA ? "Falso" : "Real";
 
-  mostrarPantalla("pantalla-resultado");
+  // Mostrar imagen ELA
+  if (data.ela_imagen) {
+    document.getElementById("ela-imagen").src = "data:image/png;base64," + data.ela_imagen;
+    document.getElementById("ela-panel").style.display = "block";
+  }
+
+  // Toggle del panel ELA
+  document.getElementById("ela-toggle").onclick = () => {
+    const body = document.getElementById("ela-body");
+    const chevron = document.getElementById("ela-chevron");
+    body.classList.toggle("oculto");
+    chevron.textContent = body.classList.contains("oculto") ? "▶" : "▼";
+  };
 }
 
+
 // ── Reiniciar ────────────────────────────────────────────────────────────────
+
 function reiniciar() {
   state.archivo = null;
-  state.captchaOk = false;
   inputImagen.value = "";
-  document.getElementById("btn-analizar").disabled = true;
+  document.getElementById("btn-analizar").disabled = false;
 
   // Reset preview
   const previewAnalisis = document.getElementById("preview-analisis");
@@ -197,12 +217,16 @@ function reiniciar() {
   // Reset resultado
   document.getElementById("preview-resultado").src = "";
 
+  // Reset tabla de métricas
+  document.getElementById("val-probabilidad").textContent = "—";
+  document.getElementById("val-confianza").textContent = "—";
+  document.getElementById("val-clasificacion").textContent = "—";
+
   // Resetear captcha de Cloudflare
   if (window.turnstile) window.turnstile.reset();
 
   mostrarPantalla("pantalla-inicio");
 }
-
 // ── Exponer al scope global (necesario para onclick en HTML y Turnstile) ─────
 window.SIFIS = {
   captcha: { onSuccess: onCaptchaSuccess },
